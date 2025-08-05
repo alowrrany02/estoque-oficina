@@ -131,14 +131,14 @@ export default function ItensCategoria() {
           })}
           style={styles.actionButton}
         >
-          <Ionicons name="create-outline" size={22} color="#1976d2" />
+          <Ionicons name="create-outline" size={22} color="#ffffffff" />
         </TouchableOpacity>
         
         <TouchableOpacity
           onPress={() => handleExcluirItem(item.id)}
           style={[styles.actionButton, styles.deleteButton]}
         >
-          <Ionicons name="trash-outline" size={22} color="#e53935" />
+          <Ionicons name="trash-outline" size={22} color="#ffffffff" />
         </TouchableOpacity>
       </View>
     </View>
@@ -158,19 +158,7 @@ export default function ItensCategoria() {
               style={styles.fundo}
             >
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity 
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={24} color="#333" />
-        </TouchableOpacity>
-        
-        <Text style={styles.title} numberOfLines={1}>
-          {categoriaNome}
-        </Text>
-      </View>
-
+      <View style={styles.content}>
       <View style={styles.searchContainer}>
         <Ionicons name="search" size={20} color="#666" style={styles.searchIcon} />
         <TextInput
@@ -182,14 +170,7 @@ export default function ItensCategoria() {
           clearButtonMode="while-editing"
         />
       </View>
-      <View style={styles.header}>
-                <TouchableOpacity 
-                  onPress={() => navigation.goBack()}
-                  style={styles.backButton}
-                >
-                  <Ionicons name="arrow-back" size={30} color="#fff" />
-                </TouchableOpacity>
-      </View>
+      
       <FlatList
         data={itensFiltrados}
         keyExtractor={item => item.id}
@@ -214,40 +195,54 @@ export default function ItensCategoria() {
           </View>
         }
       />
-      
+      <View style={styles.header}>
+        <TouchableOpacity 
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <Ionicons name="arrow-back" size={30} color="#fff" />
+        </TouchableOpacity>
+      </View>
+      </View>
     </View>
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  fundo: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center"
+  },
   container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,// Opcional: overlay escuro para melhor legibilidade
+    
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-  },
-  header: {
+ header: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    backgroundColor: 'transparent',
   },
   backButton: {
     marginRight: 12,
+    marginBottom:"8%",
   },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-    flex: 1,
+  content: {
+    borderColor: "#fff",
+    borderWidth: 2,
+    borderRadius: 8,
+    width: "90%",
+    height: "90%",
+    justifyContent:"space-evenly",
+    flexDirection:"column",
+    alignItems:"center",
   },
+
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -255,6 +250,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     margin: 16,
     paddingHorizontal: 12,
+    marginTop:"8%",
     height: 48,
     elevation: 2,
   },
@@ -267,17 +263,18 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   listContent: {
-    paddingHorizontal: 16,
-    paddingBottom: 24,
+    width:"95%",
+    margin:"auto",
   },
   itemContainer: {
-    backgroundColor: '#fff',
+    width:"100%",
+    backgroundColor: 'darkblue',
     borderRadius: 8,
     padding: 16,
-    marginBottom: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
     elevation: 1,
+    marginBottom:10,
   },
   itemInfo: {
     flex: 1,
@@ -286,12 +283,12 @@ const styles = StyleSheet.create({
   itemNome: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#fff',
     marginBottom: 4,
   },
   itemDesc: {
     fontSize: 14,
-    color: '#666',
+    color: '#ecececff',
     marginBottom: 8,
   },
   itemDetails: {
@@ -300,11 +297,11 @@ const styles = StyleSheet.create({
   },
   itemDetail: {
     fontSize: 14,
-    color: '#666',
+    color: '#e8e8e8ff',
     marginRight: 12,
   },
   itemValue: {
-    color: '#2e7d32',
+    color: '#fff',
     fontWeight: '600',
   },
   itemActions: {

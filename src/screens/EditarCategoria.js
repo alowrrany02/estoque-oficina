@@ -6,10 +6,11 @@ import {
   TouchableOpacity, 
   Alert,
   StyleSheet,
-  ActivityIndicator
+  ActivityIndicator,ImageBackground
 } from 'react-native';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function EditarCategoria({ route, navigation }) {
   // Extração segura do ID da categoria
@@ -114,15 +115,20 @@ export default function EditarCategoria({ route, navigation }) {
   }
 
   return (
+    <ImageBackground 
+                  source={{ uri: 'https://images.unsplash.com/photo-1614850523011-8f49ffc73908?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YXp1bCUyMGdyYWRpZW50ZXxlbnwwfHwwfHx8MA%3D%3D' }}
+                  style={styles.fundo}
+                >
     <View style={styles.container}>
-      <Text style={styles.header}>Editar Categoria</Text>
+      <View style={styles.content}>
+      <Text style={styles.title}>Editar Categoria</Text>
       
       <Text style={styles.originalName}>
         Nome atual: <Text style={styles.originalNameValue}>{nomeOriginal}</Text>
       </Text>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Novo nome*</Text>
+        <Text style={styles.label}>Novo nome:</Text>
         <TextInput
           value={nome}
           onChangeText={setNome}
@@ -147,15 +153,57 @@ export default function EditarCategoria({ route, navigation }) {
           <Text style={styles.saveButtonText}>Salvar Alterações</Text>
         )}
       </TouchableOpacity>
+      <View style={styles.header}>
+        <TouchableOpacity 
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <Ionicons name="arrow-back" size={30} color="#fff" />
+        </TouchableOpacity>
+      </View>
+      </View>
     </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  fundo: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+    width: "100%",
+    height: "100%",
+    justifyContent: "center"
+  },
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,// Opcional: overlay escuro para melhor legibilidade
+    
+  },
+ header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: 'transparent',
+  },
+  backButton: {
+    marginRight: 12,
+    marginBottom:"8%",
+  },
+  content: {
+    borderColor: "#fff",
+    borderWidth: 2,
+    borderRadius: 8,
+    width: "90%",
+    height: "50%",
+    justifyContent:"space-evenly",
+    flexDirection:"column",
+    alignItems:"center",
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#fff',
   },
   loadingContainer: {
     flex: 1,
@@ -180,37 +228,29 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
-  backButton: {
-    padding: 12,
-    backgroundColor: '#1976d2',
-    borderRadius: 6,
-  },
+ 
   backButtonText: {
     color: '#fff',
     fontWeight: 'bold',
   },
-  header: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 25,
-    color: '#333',
-  },
+
   originalName: {
     fontSize: 16,
     marginBottom: 15,
-    color: '#555',
+    color: '#fff',
   },
   originalNameValue: {
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
   },
   inputContainer: {
     marginBottom: 25,
+     width: "90%",
   },
   label: {
     marginBottom: 8,
     fontSize: 16,
-    color: '#555',
+    color: '#fff',
     fontWeight: '600',
   },
   input: {
@@ -222,14 +262,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   saveButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: 'darkblue',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
   saveButtonDisabled: {
-    backgroundColor: '#81c784',
+    backgroundColor: 'darkblue',
   },
   saveButtonText: {
     color: '#fff',

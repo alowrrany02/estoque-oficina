@@ -9,34 +9,30 @@ import {
   StyleSheet,
   ActivityIndicator,
   Modal,
-  FlatList
+  FlatList,
+  ImageBackground,
 } from 'react-native';
 import { doc, updateDoc, getDocs, collection, getDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { Ionicons } from '@expo/vector-icons';
+import { Picker } from '@react-native-picker/picker';
 
 export default function EditarItem({ route, navigation }) {
-  // Extração segura dos parâmetros
   const itemId = route.params?.itemId || '';
   
-  // Estados do componente
   const [item, setItem] = useState(null);
   const [nome, setNome] = useState('');
   const [descricao, setDescricao] = useState('');
   const [quantidade, setQuantidade] = useState('0');
   const [valor, setValor] = useState('0.00');
   const [categoriaId, setCategoriaId] = useState('');
-  const [categoriaNome, setCategoriaNome] = useState('');
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [showCategorias, setShowCategorias] = useState(false);
 
-  // Carrega os dados do item e categorias
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Carrega o item
         if (itemId) {
           const itemRef = doc(db, 'itens', itemId);
           const itemSnap = await getDoc(itemRef);
@@ -52,7 +48,6 @@ export default function EditarItem({ route, navigation }) {
           }
         }
 
-        // Carrega categorias
         const categoriesSnapshot = await getDocs(collection(db, 'categorias'));
         const loadedCategories = categoriesSnapshot.docs.map(doc => ({
           id: doc.id,
@@ -61,14 +56,6 @@ export default function EditarItem({ route, navigation }) {
         }));
         
         setCategorias(loadedCategories);
-
-        // Atualiza nome da categoria selecionada
-        if (item?.categoriaId) {
-          const selectedCat = loadedCategories.find(c => c.id === item.categoriaId);
-          if (selectedCat) {
-            setCategoriaNome(selectedCat.nome);
-          }
-        }
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
         Alert.alert('Erro', 'Não foi possível carregar os dados');
@@ -81,7 +68,6 @@ export default function EditarItem({ route, navigation }) {
   }, [itemId]);
 
   const handleSave = async () => {
-    // Validações
     if (!nome.trim()) {
       Alert.alert('Atenção', 'O nome do item é obrigatório');
       return;
@@ -127,12 +113,6 @@ export default function EditarItem({ route, navigation }) {
     }
   };
 
-  const selectCategoria = (cat) => {
-    setCategoriaId(cat.id);
-    setCategoriaNome(cat.nome);
-    setShowCategorias(false);
-  };
-
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -157,265 +137,188 @@ export default function EditarItem({ route, navigation }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Editar Item</Text>
-
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Nome*</Text>
-        <TextInput
-          value={nome}
-          onChangeText={setNome}
-          placeholder="Nome do item"
-          style={styles.input}
-        />
-      </View>
-
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Descrição</Text>
-        <TextInput
-          value={descricao}
-          onChangeText={setDescricao}
-          placeholder="Descrição do item"
-          style={[styles.input, styles.multilineInput]}
-          multiline
-        />
-      </View>
-
-      <View style={styles.row}>
-        <View style={[styles.inputGroup, styles.halfWidth]}>
-          <Text style={styles.label}>Quantidade*</Text>
-          <TextInput
-            value={quantidade}
-            onChangeText={text => setQuantidade(text.replace(/[^0-9]/g, ''))}
-            keyboardType="numeric"
-            placeholder="0"
-            style={styles.input}
-          />
-        </View>
-
-        <View style={[styles.inputGroup, styles.halfWidth]}>
-          <Text style={styles.label}>Valor (R$)*</Text>
-          <TextInput
-            value={valor}
-            onChangeText={text => {
-              const cleaned = text.replace(/[^0-9.]/g, '');
-              const parts = cleaned.split('.');
-              if (parts.length <= 2) {
-                setValor(cleaned);
-              }
-            }}
-            keyboardType="decimal-pad"
-            placeholder="0.00"
-            style={styles.input}
-          />
-        </View>
-      </View>
-
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Categoria*</Text>
-        <TouchableOpacity
-          onPress={() => setShowCategorias(true)}
-          style={styles.categorySelector}
-        >
-          <Text style={styles.categoryText}>
-            {categoriaNome || 'Selecione uma categoria'}
-          </Text>
-          <Ionicons name="chevron-down" size={20} color="#666" />
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity
-        onPress={handleSave}
-        style={[styles.saveButton, saving && styles.saveButtonDisabled]}
-        disabled={saving}
-      >
-        {saving ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.saveButtonText}>Salvar Alterações</Text>
-        )}
-      </TouchableOpacity>
-
-      {/* Modal de seleção de categorias */}
-      <Modal
-        visible={showCategorias}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setShowCategorias(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Selecione uma categoria</Text>
-            
-            <FlatList
-              data={categorias}
-              keyExtractor={item => item.id}
-              renderItem={({ item: cat }) => (
-                <TouchableOpacity
-                  onPress={() => selectCategoria(cat)}
-                  style={[
-                    styles.modalItem,
-                    categoriaId === cat.id && styles.selectedModalItem
-                  ]}
-                >
-                  <Text>{cat.nome}</Text>
-                  {categoriaId === cat.id && (
-                    <Ionicons name="checkmark" size={20} color="#1976d2" />
-                  )}
-                </TouchableOpacity>
-              )}
-              ItemSeparatorComponent={() => <View style={styles.separator} />}
+    <ImageBackground 
+      source={{ uri: 'https://images.unsplash.com/photo-1614850523011-8f49ffc73908?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YXp1bCUyMGdyYWRpZW50ZXxlbnwwfHwwfHx8MA%3D%3D' }}
+      style={styles.fundo}
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.content}>
+          <Text style={styles.title}>Editar Item</Text>
+          <View style={styles.contentInputs}>
+            <TextInput
+              style={styles.input}
+              placeholder="Nome do item"
+              value={nome}
+              onChangeText={setNome}
             />
 
-            <TouchableOpacity
-              onPress={() => setShowCategorias(false)}
-              style={styles.modalCloseButton}
-            >
-              <Text style={styles.modalCloseText}>Fechar</Text>
-            </TouchableOpacity>
+            <TextInput
+              style={styles.input}
+              placeholder="Descrição"
+              value={descricao}
+              onChangeText={setDescricao}
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Quantidade"
+              keyboardType="numeric"
+              value={quantidade}
+              onChangeText={text => setQuantidade(text.replace(/[^0-9]/g, ''))}
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Valor (R$)"
+              keyboardType="decimal-pad"
+              value={valor}
+              onChangeText={text => {
+                const cleaned = text.replace(/[^0-9.]/g, '');
+                const parts = cleaned.split('.');
+                if (parts.length <= 2) {
+                  setValor(cleaned);
+                }
+              }}
+            />
+
+            <Text style={styles.label}>Selecione a Categoria:</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={categoriaId}
+                onValueChange={(itemValue) => setCategoriaId(itemValue)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Selecione uma categoria" value="" />
+                {categorias.map((cat) => (
+                  <Picker.Item key={cat.id} label={cat.nome} value={cat.id} />
+                ))}
+              </Picker>
+            </View>
           </View>
+
+          <TouchableOpacity 
+            style={styles.salvarBtn} 
+            onPress={handleSave}
+            disabled={saving}
+          >
+            {saving ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <>
+                <Ionicons name="save-outline" size={20} color="#fff" />
+                <Text style={styles.salvarBtnText}>Salvar Alterações</Text>
+              </>
+            )}
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={30} color="#fff" />
+          </TouchableOpacity>
         </View>
-      </Modal>
-    </ScrollView>
+      </ScrollView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    backgroundColor: '#fff',
-    paddingBottom: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,
+  },
+  fundo: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center"
+  },
+  content: {
+    borderColor: "#fff",
+    borderWidth: 2,
+    borderRadius: 8,
+    width: "90%",
+    height: "70%",
+    justifyContent: "space-evenly",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  contentInputs: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 25,
+    textAlign: 'center',
+    color: "#fff"
+  },
+  input: {
+    borderRadius: 8,
+    marginBottom: 15,
+    padding: 10,
+    backgroundColor: "#fff",
+    width: "90%"
+  },
+  label: {
+    marginBottom: 10,
+    fontWeight: 'bold',
+    color: "#fff"
+  },
+  salvarBtn: {
+    flexDirection: 'row',
+    backgroundColor: 'darkblue',
+    padding: 14,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  salvarBtnText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    marginLeft: 8,
+    fontSize: 16,
+  },
+  pickerContainer: {
+    borderRadius: 8,
+    marginBottom: 20,
+    overflow: 'hidden',
+    width: "90%",
+    backgroundColor: "#fff"
+  },
+  picker: {
+    height: 50,
+    width: '100%',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(0,0,0,0.7)',
   },
   loadingText: {
     marginTop: 10,
-    color: '#666',
+    color: '#fff',
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    backgroundColor: 'rgba(0,0,0,0.7)',
   },
   errorText: {
     fontSize: 18,
-    color: '#e53935',
+    color: '#fff',
     marginBottom: 20,
   },
   backButton: {
-    padding: 12,
-    backgroundColor: '#1976d2',
-    borderRadius: 6,
-  },
-  backButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  header: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 25,
-    color: '#333',
-  },
-  inputGroup: {
-    marginBottom: 20,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  halfWidth: {
-    width: '48%',
-  },
-  label: {
-    marginBottom: 8,
-    fontWeight: '600',
-    color: '#555',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 6,
-    padding: 12,
-    fontSize: 16,
-  },
-  multilineInput: {
-    minHeight: 80,
-    textAlignVertical: 'top',
-  },
-  categorySelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 6,
-    padding: 12,
-  },
-  categoryText: {
-    fontSize: 16,
-  },
-  saveButton: {
-    backgroundColor: '#28a745',
-    padding: 15,
-    borderRadius: 6,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  saveButtonDisabled: {
-    backgroundColor: '#81c784',
-  },
-  saveButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContainer: {
-    width: '80%',
-    maxHeight: '70%',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  modalItem: {
-    padding: 15,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  selectedModalItem: {
-    backgroundColor: '#f5f5f5',
-  },
-  separator: {
-    height: 1,
-    backgroundColor: '#eee',
-  },
-  modalCloseButton: {
-    marginTop: 15,
-    padding: 12,
-    backgroundColor: '#1976d2',
-    borderRadius: 6,
-    alignItems: 'center',
-  },
-  modalCloseText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    padding: 10,
   },
 });

@@ -114,14 +114,14 @@ export default function ListaCategorias() {
           })}
           style={styles.actionButton}
         >
-          <Ionicons name="create-outline" size={22} color="#1976d2" />
+          <Ionicons name="create-outline" size={22} color="#ffffffff" />
         </TouchableOpacity>
 
         <TouchableOpacity 
           onPress={() => confirmarExclusao(item.id, item.nome)}
           style={[styles.actionButton, styles.deleteButton]}
         >
-          <Ionicons name="trash-outline" size={22} color="#e53935" />
+          <Ionicons name="trash-outline" size={22} color="#ffffffff" />
         </TouchableOpacity>
       </View>
     </View>
@@ -178,13 +178,13 @@ export default function ListaCategorias() {
         }
       />
       <View style={styles.header}>
-                <TouchableOpacity 
-                  onPress={() => navigation.goBack()}
-                  style={styles.backButton}
-                >
-                  <Ionicons name="arrow-back" size={30} color="#fff" />
-                </TouchableOpacity>
-              </View>
+        <TouchableOpacity 
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <Ionicons name="arrow-back" size={30} color="#fff" />
+        </TouchableOpacity>
+      </View>
     </View>
     </View>
     </ImageBackground>
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   },
   
   content: {
-     borderColor: "#fff",
+    borderColor: "#fff",
     borderWidth: 2,
     borderRadius: 8,
     width: "90%",
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     paddingBottom: 2,
   },
   itemContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: 'darkblue',
     borderRadius: 8,
     padding: 16,
     margin:"auto",
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 16,
-    color: '#333',
+    color: '#fff',
   },
   actionsContainer: {
     flexDirection: 'row',
