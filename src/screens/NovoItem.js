@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
-  StyleSheet, ScrollView, Alert
+  StyleSheet, ScrollView, Alert, ImageBackground
 } from 'react-native';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
@@ -59,9 +59,14 @@ export default function NovoItem({ navigation }) {
   };
 
   return (
+    <ImageBackground 
+              source={{ uri: 'https://images.unsplash.com/photo-1614850523011-8f49ffc73908?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YXp1bCUyMGdyYWRpZW50ZXxlbnwwfHwwfHx8MA%3D%3D' }}
+              style={styles.fundo}
+            >
     <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.content}>
       <Text style={styles.title}>Adicionar Novo Item</Text>
-
+      <View style={styles.contentInputs}>
       <TextInput
         style={styles.input}
         placeholder="Nome do item"
@@ -105,38 +110,72 @@ export default function NovoItem({ navigation }) {
             ))}
         </Picker>
         </View>
+        </View>
 
 
       <TouchableOpacity style={styles.salvarBtn} onPress={salvarItem}>
         <Ionicons name="save-outline" size={20} color="#fff" />
         <Text style={styles.salvarBtnText}>Salvar Item</Text>
       </TouchableOpacity>
+      <TouchableOpacity 
+        onPress={() => navigation.goBack()}
+        style={styles.backButton}
+      >
+        <Ionicons name="arrow-back" size={30} color="#fff" />
+      </TouchableOpacity>
+    </View>
     </ScrollView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    paddingTop: 60,
-    backgroundColor: '#fff',
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,// Opcional: overlay escuro para melhor legibilidade
+    
+  },
+  fundo: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center"
+  },
+  content: {
+     borderColor: "#fff",
+    borderWidth: 2,
+    borderRadius: 8,
+    width: "90%",
+    height: "70%",
+    justifyContent:"space-evenly",
+    flexDirection:"column",
+    alignItems:"center",
+  },
+  contentInputs:{
+    width:"100%",
+    justifyContent:"center",
+    alignItems:"center"
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 25,
     textAlign: 'center',
+    color:"#fff"
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 8,
     marginBottom: 15,
     padding: 10,
+    backgroundColor:"#fff",
+    width:"90%"
+  
   },
   label: {
     marginBottom: 10,
     fontWeight: 'bold',
+    color:"#fff"
   },
   categoriaButton: {
     padding: 10,
@@ -144,6 +183,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#1976d2',
     marginBottom: 10,
+    width:"90%"
   },
   categoriaSelecionada: {
     backgroundColor: '#1976d2',
@@ -153,12 +193,12 @@ const styles = StyleSheet.create({
   },
   salvarBtn: {
     flexDirection: 'row',
-    backgroundColor: '#1976d2',
+    backgroundColor: 'darkblue',
     padding: 14,
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 30,
+   
   },
   salvarBtnText: {
     color: '#fff',
@@ -167,11 +207,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   pickerContainer: {
-  borderWidth: 1,
-  borderColor: '#ccc',
   borderRadius: 8,
   marginBottom: 20,
   overflow: 'hidden',
+  width:"90%",
+  backgroundColor:"#fff"
 },
 picker: {
   height: 50,

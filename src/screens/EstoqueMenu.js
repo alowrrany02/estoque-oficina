@@ -14,26 +14,25 @@ export default function EstoqueMenu() {
 
   return (
     <ImageBackground 
-      source={{ uri: 'https://static.vecteezy.com/ti/vetor-gratis/p1/1433919-fundo-azul-escuro-com-linhas-vetor.jpg' }}
-      style={styles.backgroundImage}
-      resizeMode="cover"
-    >
+          source={{ uri: 'https://images.unsplash.com/photo-1614850523011-8f49ffc73908?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YXp1bCUyMGdyYWRpZW50ZXxlbnwwfHwwfHx8MA%3D%3D' }}
+          style={styles.fundo}
+        >
+        
       <View style={styles.container}>
         <View style={styles.content}>
-          <Text style={styles.title}>Menu do Estoque</Text>
           
           <View style={styles.searchContainer}>
             <Ionicons name="search" size={20} color="#999" style={styles.icon} />
             <TextInput
               style={styles.searchInput}
               placeholder="Pesquisar item..."
-              placeholderTextColor="#aaa"
+              placeholderTextColor="#999"
               value={search}
               onChangeText={setSearch}
               onSubmitEditing={handleSearch}
             />
           </View>
-
+        <View style={styles.containerMenu}>
           <TouchableOpacity
             style={styles.option}
             onPress={() => navigation.navigate('NovaCategoria')}
@@ -42,7 +41,7 @@ export default function EstoqueMenu() {
               <Ionicons name="add-circle-outline" size={24} color="#fff" />
             </View>
             <Text style={styles.optionText}>Criar Nova Categoria</Text>
-            <Ionicons name="chevron-forward" size={20} color="#fff" />
+            <Ionicons style={styles.optionIconContainer} name="chevron-forward" size={20} color="#fff" />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -53,19 +52,28 @@ export default function EstoqueMenu() {
               <Ionicons name="add-outline" size={24} color="#fff" />
             </View>
             <Text style={styles.optionText}>Adicionar Novo Item</Text>
-            <Ionicons name="chevron-forward" size={20} color="#fff" />
+            <Ionicons style={styles.optionIconContainer} name="chevron-forward" size={20} color="#fff" />
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.option}
-            onPress={() => navigation.navigate('ListaCategorias')} // 👈 Corrigido aqui
+            onPress={() => navigation.navigate('ListaCategorias')} 
           >
             <View style={styles.optionIconContainer}>
-              <Ionicons name="list-outline" size={24} color="#fff" />
+              <Ionicons name="list-outline" size={24}  color="#fff" />
             </View>
             <Text style={styles.optionText}>Ver Categorias</Text>
-            <Ionicons name="chevron-forward" size={20} color="#fff" />
+            <Ionicons style={styles.optionIconContainer} name="chevron-forward" size={20} color="#fff" />
           </TouchableOpacity>
+          </View>
+          <View style={styles.header}>
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={30} color="#fff" />
+          </TouchableOpacity>
+        </View>
         </View>
       </View>
     </ImageBackground>
@@ -73,69 +81,79 @@ export default function EstoqueMenu() {
 }
 
 const styles = StyleSheet.create({
-  backgroundImage: {
+  fundo: {
     flex: 1,
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
+    justifyContent: "center"
   },
   container: {
-    flex: 1,
-    padding: 20,
-    paddingTop: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,// Opcional: overlay escuro para melhor legibilidade
+    
   },
-  content: {
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    borderRadius: 20,
-    padding: 25,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 10,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 25,
-    textAlign: 'center',
-  },
-  searchContainer: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    marginBottom: 25,
-    height: 50,
+    padding: 16,
+    backgroundColor: 'transparent',
   },
-  icon: {
-    marginRight: 10,
-    color: '#fff',
+  backButton: {
+    marginRight: 12,
+
+  },
+  containerMenu:{
+    gap:5,
+  },
+  content: {
+     borderColor: "#fff",
+    borderWidth: 2,
+    borderRadius: 8,
+    width: "90%",
+    height: "60%",
+    justifyContent:"space-evenly",
+    flexDirection:"column",
+    alignItems:"center",
+  },
+  
+  searchContainer: {
+    flexDirection: 'row',
+    width: "90%",
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    
+    backgroundColor: 'rgba(255, 255, 255, 1)', 
+  },
+   icon: {
+    marginRight: 6,
   },
   searchInput: {
     flex: 1,
-    height: '100%',
-    color: '#fff',
-    fontSize: 16,
+    height: 40,
   },
   option: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'rgba(25, 118, 210, 0.7)',
+    justifyContent: 'space-evenly',
+    backgroundColor: 'darkblue',
     borderRadius: 12,
     paddingVertical: 18,
-    paddingHorizontal: 20,
-    marginBottom: 15,
+    width:"85%",
+    marginBottom: 10,
   },
   optionIconContainer: {
     width: 30,
     alignItems: 'center',
+    marginLeft:10,
+    marginRight:10,
   },
   optionText: {
     flex: 1,
-    marginLeft: 15,
+    marginLeft: 1,
     fontSize: 16,
     color: '#fff',
     fontWeight: '600',
