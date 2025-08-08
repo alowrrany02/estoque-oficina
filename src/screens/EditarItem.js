@@ -8,8 +8,6 @@ import {
   ScrollView,
   StyleSheet,
   ActivityIndicator,
-  Modal,
-  FlatList,
   ImageBackground,
 } from 'react-native';
 import { doc, updateDoc, getDocs, collection, getDoc } from 'firebase/firestore';
