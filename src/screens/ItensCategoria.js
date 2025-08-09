@@ -5,6 +5,7 @@ import { collection, query, where, getDocs, deleteDoc, doc } from 'firebase/fire
 import { Ionicons } from '@expo/vector-icons';
 import { db } from '../firebaseConfig';
 
+
 export default function ItensCategoria() {
   const route = useRoute();
   const navigation = useNavigation();
@@ -238,6 +239,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 8,
     margin: 16,
+    color: '#000000ff',
     paddingHorizontal: 12,
     marginTop:"8%",
     height: 48,
@@ -249,7 +251,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: '#333',
+    color: '#000000ff',
   },
   listContent: {
     width:"95%",

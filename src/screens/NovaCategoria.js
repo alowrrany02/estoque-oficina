@@ -40,6 +40,7 @@ export default function NovaCategoria() {
       <TextInput
         style={styles.input}
         placeholder="Nome da categoria"
+        placeholderTextColor="#666666"
         value={nome}
         onChangeText={setNome}
       />
@@ -110,6 +111,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     backgroundColor: "#fff",
     width:"90%",
+    color: '#000000ff',
   },
   button: {
     flexDirection: "row",

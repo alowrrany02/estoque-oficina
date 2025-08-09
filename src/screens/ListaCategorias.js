@@ -1,4 +1,3 @@
-// src/screens/ListaCategorias.js
 import React, { useState, useCallback } from 'react';
 import {
   View,
@@ -10,7 +9,8 @@ import {
   Alert,
   ImageBackground,
   TextInput,
-  ActivityIndicator
+  ActivityIndicator,
+  Keyboard
 } from 'react-native';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -24,12 +24,7 @@ export default function ListaCategorias() {
   const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation();
 
-
-  const handleSearch = () => {
-      Keyboard.dismiss();
-      alert('Você pesquisou: ' + search);
-    };
-
+  // Buscar categorias do Firestore
   const buscarCategorias = async (isRefreshing = false) => {
     if (isRefreshing) {
       setRefreshing(true);
@@ -41,7 +36,7 @@ export default function ListaCategorias() {
       const querySnapshot = await getDocs(collection(db, 'categorias'));
       const lista = querySnapshot.docs.map(doc => ({
         id: doc.id,
-        nome: doc.data().nome || 'Categoria sem nome', // Garante que nome nunca será undefined
+        nome: doc.data().nome || 'Categoria sem nome',
         ...doc.data()
       }));
       setCategorias(lista);
@@ -58,14 +53,19 @@ export default function ListaCategorias() {
 
   useFocusEffect(
     useCallback(() => {
-      let mounted = true;
-      if (mounted) {
-        buscarCategorias();
-      }
-      return () => {
-        mounted = false;
-      };
+      buscarCategorias();
     }, [])
+  );
+
+  // Ação ao submeter a pesquisa
+  const handleSearch = () => {
+    Keyboard.dismiss();
+    // Não precisa mais alertar aqui, filtro será aplicado automaticamente abaixo
+  };
+
+  // Filtra categorias a partir do texto digitado em search
+  const categoriasFiltradas = categorias.filter(cat =>
+    cat.nome.toLowerCase().includes(search.toLowerCase())
   );
 
   const confirmarExclusao = (categoriaId, categoriaNome) => {
@@ -96,9 +96,9 @@ export default function ListaCategorias() {
     <View style={styles.itemContainer}>
       <TouchableOpacity
         style={styles.itemContent}
-        onPress={() => navigation.navigate('ItensCategoria', { 
-          categoriaId: item.id, 
-          categoriaNome: item.nome 
+        onPress={() => navigation.navigate('ItensCategoria', {
+          categoriaId: item.id,
+          categoriaNome: item.nome
         })}
       >
         <Text style={styles.itemText} numberOfLines={1}>
@@ -107,8 +107,8 @@ export default function ListaCategorias() {
       </TouchableOpacity>
 
       <View style={styles.actionsContainer}>
-        <TouchableOpacity 
-          onPress={() => navigation.navigate('EditarCategoria', { 
+        <TouchableOpacity
+          onPress={() => navigation.navigate('EditarCategoria', {
             categoriaId: item.id,
             categoriaNome: item.nome
           })}
@@ -117,7 +117,7 @@ export default function ListaCategorias() {
           <Ionicons name="create-outline" size={22} color="#ffffffff" />
         </TouchableOpacity>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={() => confirmarExclusao(item.id, item.nome)}
           style={[styles.actionButton, styles.deleteButton]}
         >
@@ -136,57 +136,59 @@ export default function ListaCategorias() {
   }
 
   return (
-    <ImageBackground 
-              source={{ uri: 'https://images.unsplash.com/photo-1614850523011-8f49ffc73908?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YXp1bCUyMGdyYWRpZW50ZXxlbnwwfHwwfHx8MA%3D%3D' }}
-              style={styles.fundo}
-            >
-    <View style={styles.container}>
-      <View style={styles.content}>
-      <Text style={styles.title}>Categorias</Text>
-      <View style={styles.searchContainer}>
-                  <Ionicons name="search" size={20} color="#999" style={styles.icon} />
-                  <TextInput
-                    style={styles.searchInput}
-                    placeholder="Pesquisar item..."
-                    placeholderTextColor="#999"
-                    value={search}
-                    onChangeText={setSearch}
-                    onSubmitEditing={handleSearch}
-                  />
-                </View>
-      <FlatList
-      style={styles.flatContainer}
-        data={categorias}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={styles.listContent}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => buscarCategorias(true)}
-            colors={['#1976d2']}
-            tintColor="#1976d2"
-          />
-        }
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Ionicons name="folder-open-outline" size={48} color="#ccc" />
-            <Text style={styles.emptyText}>
-              Nenhuma categoria encontrada
-            </Text>
+    <ImageBackground
+      source={{ uri: 'https://images.unsplash.com/photo-1614850523011-8f49ffc73908?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YXp1bCUyMGdyYWRpZW50ZXxlbnwwfHwwfHx8MA%3D%3D' }}
+      style={styles.fundo}
+    >
+      <View style={styles.container}>
+        <View style={styles.content}>
+          <Text style={styles.title}>Categorias</Text>
+          <View style={styles.searchContainer}>
+            <Ionicons name="search" size={20} color="#999" style={styles.icon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Pesquisar categoria..."
+              placeholderTextColor="#999"
+              value={search}
+              onChangeText={setSearch} // Atualiza o filtro conforme digita
+              onSubmitEditing={handleSearch} // Pode ser opcional aqui, já que filtro é em tempo real
+              returnKeyType="search"
+              clearButtonMode="while-editing"
+            />
           </View>
-        }
-      />
-      <View style={styles.header}>
-        <TouchableOpacity 
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={30} color="#fff" />
-        </TouchableOpacity>
+          <FlatList
+            style={styles.flatContainer}
+            data={categoriasFiltradas}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            contentContainerStyle={styles.listContent}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => buscarCategorias(true)}
+                colors={['#1976d2']}
+                tintColor="#1976d2"
+              />
+            }
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <Ionicons name="folder-open-outline" size={48} color="#ccc" />
+                <Text style={styles.emptyText}>
+                  Nenhuma categoria encontrada
+                </Text>
+              </View>
+            }
+          />
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}
+            >
+              <Ionicons name="arrow-back" size={30} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
-    </View>
-    </View>
     </ImageBackground>
   );
 }
@@ -201,11 +203,10 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    flexGrow: 1,// Opcional: overlay escuro para melhor legibilidade
-    
+    flexGrow: 1,
   },
-  flatContainer:{
-    marginTop:"10%"
+  flatContainer: {
+    marginTop: "10%"
   },
   header: {
     flexDirection: 'row',
@@ -215,18 +216,17 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginRight: 12,
-    marginBottom:"8%",
+    marginBottom: "8%",
   },
-  
   content: {
     borderColor: "#fff",
     borderWidth: 2,
     borderRadius: 8,
     width: "90%",
     height: "90%",
-    justifyContent:"space-evenly",
-    flexDirection:"column",
-    alignItems:"center",
+    justifyContent: "space-evenly",
+    flexDirection: "column",
+    alignItems: "center",
   },
   loadingContainer: {
     flex: 1,
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#fff',
-    marginTop:"8%",
+    marginTop: "8%",
   },
   searchContainer: {
     flexDirection: 'row',
@@ -248,10 +248,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 10,
     alignItems: 'center',
-    marginTop:"8%",
-    backgroundColor: 'rgba(255, 255, 255, 1)', 
+    marginTop: "8%",
+    color: '#000000ff',
+    backgroundColor: 'rgba(255, 255, 255, 1)',
   },
-   icon: {
+  icon: {
     marginRight: 6,
   },
   searchInput: {
@@ -265,13 +266,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'darkblue',
     borderRadius: 8,
     padding: 16,
-    margin:"auto",
-    marginBottom:10,
+    marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-
-    width:"95%"
+    width: "95%"
   },
   itemContent: {
     flex: 1,

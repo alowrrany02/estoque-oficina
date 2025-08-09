@@ -133,6 +133,7 @@ export default function EditarCategoria({ route, navigation }) {
           value={nome}
           onChangeText={setNome}
           placeholder="Digite o novo nome"
+          placeholderTextColor="#666666"
           style={styles.input}
           maxLength={50}
           editable={!saving}
@@ -250,7 +251,7 @@ const styles = StyleSheet.create({
   label: {
     marginBottom: 8,
     fontSize: 16,
-    color: '#fff',
+    color: '#000000ff',
     fontWeight: '600',
   },
   input: {
@@ -260,6 +261,7 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
     backgroundColor: '#fff',
+    color:"#000"
   },
   saveButton: {
     backgroundColor: 'darkblue',

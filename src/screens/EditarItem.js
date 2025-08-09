@@ -143,31 +143,41 @@ export default function EditarItem({ route, navigation }) {
         <View style={styles.content}>
           <Text style={styles.title}>Editar Item</Text>
           <View style={styles.contentInputs}>
+            <Text style={styles.label}>Nome do Item:</Text>
             <TextInput
               style={styles.input}
-              placeholder="Nome do item"
+              placeholder="Digite o nome do item"
+              placeholderTextColor="#666666"
               value={nome}
               onChangeText={setNome}
             />
 
+            <Text style={styles.label}>Descrição:</Text>
             <TextInput
               style={styles.input}
-              placeholder="Descrição"
+              placeholder="Digite a descrição do item"
+              placeholderTextColor="#666666"
               value={descricao}
               onChangeText={setDescricao}
+              multiline={true}
+              numberOfLines={2}
             />
 
+            <Text style={styles.label}>Quantidade:</Text>
             <TextInput
               style={styles.input}
-              placeholder="Quantidade"
+              placeholder="Digite a quantidade"
+              placeholderTextColor="#666666"
               keyboardType="numeric"
               value={quantidade}
               onChangeText={text => setQuantidade(text.replace(/[^0-9]/g, ''))}
             />
 
+            <Text style={styles.label}>Valor (R$):</Text>
             <TextInput
               style={styles.input}
-              placeholder="Valor (R$)"
+              placeholder="Digite o valor"
+              placeholderTextColor="#666666"
               keyboardType="decimal-pad"
               value={valor}
               onChangeText={text => {
@@ -186,9 +196,9 @@ export default function EditarItem({ route, navigation }) {
                 onValueChange={(itemValue) => setCategoriaId(itemValue)}
                 style={styles.picker}
               >
-                <Picker.Item label="Selecione uma categoria" value="" />
+                <Picker.Item label="Selecione uma categoria" value="" color="#666666" />
                 {categorias.map((cat) => (
-                  <Picker.Item key={cat.id} label={cat.nome} value={cat.id} />
+                  <Picker.Item key={cat.id} label={cat.nome} value={cat.id} color="#333333" />
                 ))}
               </Picker>
             </View>
@@ -238,7 +248,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 8,
     width: "90%",
-    height: "70%",
+    height: "80%",
     justifyContent: "space-evenly",
     flexDirection: "column",
     alignItems: "center",
@@ -251,21 +261,30 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 25,
+    marginBottom: 5,
     textAlign: 'center',
     color: "#fff"
   },
   input: {
     borderRadius: 8,
-    marginBottom: 15,
-    padding: 10,
-    backgroundColor: "#fff",
-    width: "90%"
+    marginBottom: 5,
+    padding: 12,
+    backgroundColor: "#ffffff",
+    width: "90%",
+    fontSize: 16,
+    color: "#000000ff",
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    textAlign: 'left',
   },
   label: {
-    marginBottom: 10,
+    marginBottom: 5,
+    marginTop: 10,
     fontWeight: 'bold',
-    color: "#fff"
+    color: "#ffffff",
+    fontSize: 16,
+    alignSelf: 'flex-start',
+    marginLeft: '5%',
   },
   salvarBtn: {
     flexDirection: 'row',
@@ -274,6 +293,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   salvarBtnText: {
     color: '#fff',
@@ -286,11 +310,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     overflow: 'hidden',
     width: "90%",
-    backgroundColor: "#fff"
+    backgroundColor: "#ffffff",
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    elevation: 1,
   },
   picker: {
     height: 50,
     width: '100%',
+    color: "#333333",
   },
   loadingContainer: {
     flex: 1,
@@ -314,9 +342,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   backButton: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    padding: 10,
+    marginRight: 12,
+    marginBottom: "2%",
+  },
+  backButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
